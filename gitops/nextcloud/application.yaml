@@ -7,9 +7,9 @@ spec:
   project: default
 
   source:
-    repoURL: https://nextcloud.github.io/helm/
+    repoURL: https://charts.bitnami.com/bitnami
     chart: nextcloud
-    targetRevision: 6.6.0
+    targetRevision: 6.5.0
     helm:
       valueFiles:
         - values.yaml
