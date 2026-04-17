@@ -1,0 +1,20 @@
+nextcloud:
+  host: nextcloud.tracexit.com
+
+ingress:
+  enabled: false
+
+internalDatabase:
+  enabled: false
+
+postgresql:
+  enabled: true
+  auth:
+    username: ncusr
+    password: dsf11jha64
+    database: ncdb
+    postgresPassword: DSF11jha%_64
+
+persistence:
+  enabled: true
+  size: 20Gi

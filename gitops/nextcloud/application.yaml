@@ -7,13 +7,16 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/angarosxx/nc.git
-    targetRevision: main
-    path: gitops/nextcloud
+    repoURL: https://nextcloud.github.io/helm/
+    chart: nextcloud
+    targetRevision: 6.6.0
+    helm:
+      valueFiles:
+        - values.yaml
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: nextcloud
 
   syncPolicy:
     automated:
