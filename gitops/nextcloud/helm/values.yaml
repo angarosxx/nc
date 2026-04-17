@@ -1,11 +1,9 @@
 nextcloud:
   host: nextcloud.tracexit.com
 
-ingress:
-  enabled: false
-
-internalDatabase:
-  enabled: false
+persistence:
+  enabled: true
+  size: 20Gi
 
 postgresql:
   enabled: true
@@ -15,6 +13,5 @@ postgresql:
     database: ncdb
     postgresPassword: DSF11jha%_64
 
-persistence:
-  enabled: true
-  size: 20Gi
+service:
+  type: ClusterIP
