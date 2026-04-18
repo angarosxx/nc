@@ -1,11 +1,29 @@
+# 1. Disable the default internal SQLite
+internalDatabase:
+  enabled: false
+
+# 2. Enable and configure the PostgreSQL sub-chart
+postgresql:
+  enabled: true
+  auth:
+    database: nctrace-x
+    username: ncusr
+    password: "DSF29jha64"
+  primary:
+    persistence:
+      enabled: true
+      storageClass: "local-path"
+      size: 10Gi
+
+# 2. Nextcloud Application Settings (MERGED)
 nextcloud:
   host: nc.tracexit.com
-  # This tells Nextcloud it's behind a proxy so it generates https:// links correctly
+  datadir: /var/www/html/data
   configs:
     proxy.config.php: |-
       <?php
       $CONFIG = array (
-        'trusted_proxies' => array('192.168.20.110'), # The Internal IP of your Nginx VM
+        'trusted_proxies' => array('192.168.20.110'), 
         'overwriteprotocol' => 'https',
       );
 
