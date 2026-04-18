@@ -12,7 +12,7 @@ spec:
       targetRevision: 9.0.5  # Use a valid version!
       helm:
         valueFiles:
-          - $values/apps/nextcloud/values.yaml # Link to your Git repo
+          - $values/nc-gitops/apps/nextcloud/values.yaml # Link to your Git repo
     # Source 2: Your Github Repo (where your values live)
     - repoURL: https://github.com/angarosxx/nc.git
       targetRevision: main
