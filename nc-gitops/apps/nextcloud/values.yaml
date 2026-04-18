@@ -6,7 +6,7 @@ internalDatabase:
 postgresql:
   enabled: true
   auth:
-    database: nctrace-x
+    database: nctracex
     username: ncusr
     password: "DSF29jha64"
   primary:
