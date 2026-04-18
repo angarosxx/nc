@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Source 1: The official Helm Chart
+    - repoURL: https://nextcloud.github.io/helm/
+      chart: nextcloud
+      targetRevision: 9.0.5  # Use a valid version!
+      helm:
+        valueFiles:
+          - $values/apps/nextcloud/values.yaml # Link to your Git repo
+    # Source 2: Your Github Repo (where your values live)
+    - repoURL: https://github.com/angarosxx/nc.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nextcloud
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
