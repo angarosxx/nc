@@ -11,7 +11,8 @@ nextcloud:
     enabled: true
     annotations:
       kubernetes.io/ingress.class: traefik
-      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+      traefik.ingress.kubernetes.io/router.middlewares: nextcloud-nextcloud-redirect@kubernetescrd
     hosts:
       - host: nc.tracexit.com
         paths:
@@ -21,7 +22,7 @@ nextcloud:
               service:
                 name: nextcloud
                 port:
-                  number: 80
+                  number: 8080
   objectStore:
     enabled: false 
 
