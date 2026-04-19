@@ -74,6 +74,8 @@ nextcloud:
       $CONFIG = array (
         'trusted_proxies' => array('192.168.20.110'),
         'overwriteprotocol' => 'https',
+        'trusted_domains' => array('nc.tracexit.com'),
+        'overwrite.cli.url' => 'https://nc.tracexit.com',
       );
 
 # 3. Temporarily DISABLE Probes to let the install finish
