@@ -43,9 +43,9 @@ nextcloud:
     - name: OBJECTSTORE_S3_PORT
       value: "9000"
     - name: OBJECTSTORE_S3_KEY
-      value: "yugPz75sTWtJsGzP60Lq"
+      value: "LqOCO1IBS6nna8PHqQtu"
     - name: OBJECTSTORE_S3_SECRET
-      value: "QggrYxkvlyOzunez1xHTEy0vsY4UqcmrTHXienJ5"
+      value: "pte7bx6Ef5DowIokKK841lPygLZ9q7jOMnzWCRqI"
     - name: OBJECTSTORE_S3_REGION
       value: "us-east-1"
     - name: OBJECTSTORE_S3_SSL
