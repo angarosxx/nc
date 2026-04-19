@@ -26,6 +26,24 @@ nextcloud:
         'trusted_proxies' => array('192.168.20.110'), 
         'overwriteprotocol' => 'https',
       );
+# This automatically installs the OIDC app on startup
+  extraApps:
+    oidc_login: https://github.com/pulsejet/nextcloud-oidc-login/releases/latest/download/oidc_login.tar.gz
+
+  configs:
+    # Add this to your existing configs block
+    oidc.config.php: |-
+      <?php
+      $CONFIG = array (
+        'oidc_login_client_id' => 'nc',
+        'oidc_login_client_secret' => 'E4KdTMA0caH3UtAeILi5RMVm9gRz0hom',
+        'oidc_login_provider_url' => 'https://sso-kc.tracexit.com/realms/nc', # Change 'master' to your realm name
+        'oidc_login_logout_url' => 'https://sso-kc.tracexit.com/realms/nc/protocol/openid-connect/logout',
+        'oidc_login_auto_redirect' => true,
+        'oidc_login_end_session_enabled' => true,
+        'oidc_login_button_text' => 'Login with Keycloak',
+        'oidc_login_display_name_claim' => 'preferred_username',
+      );
 
 ingress:
   enabled: true
