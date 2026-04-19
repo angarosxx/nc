@@ -1,61 +1,50 @@
-# 1. Database - Top Level
+# Keep Postgres at the top
 postgresql:
   enabled: true
   auth:
     database: nctracex
     username: ncusr
     password: 'DSF29jha64'
-  primary:
-    persistence:
-      enabled: true
-      storageClass: "local-path"
-      size: 10Gi
 
-# 2. Storage - Top Level (Standard for most Nextcloud charts)
-objectStore:
-  enabled: true
-  config:
-    region: 'us-east-1'
-    bucket: 'nextcloud'
-    endpoint: 'minio.minio.svc.cluster.local'
-    port: 9000
-    use_ssl: false # Set to false for internal cluster communication
-    autocreate: true
-    key: 'rfibb9ivKUwQA7AxwPVD'
-    secret: 'p98m97807cch4KhuhjefjJjQhy4w8wV26OWs2v8E'
-
-# 3. Nextcloud App Settings
+# Most reliable way to force S3 in the official chart:
 nextcloud:
   host: nc.tracexit.com
-  extraApps:
-    oidc_login: https://github.com/pulsejet/nextcloud-oidc-login/releases/latest/download/oidc_login.tar.gz
+  # Try using the 'externalStorage' naming convention if 'objectStore' failed
+  objectStore:
+    enabled: true
+    config:
+      region: 'us-east-1'
+      bucket: 'nextcloud'
+      endpoint: 'minio.minio.svc.cluster.local'
+      port: 9000
+      use_ssl: false
+      autocreate: true
+      key: 'rfibb9ivKUwQA7AxwPVD'
+      secret: 'p98m97807cch4KhuhjefjJjQhy4w8wV26OWs2v8E'
 
   configs:
+    # This manually forces S3 if the Helm chart is being stubborn
+    s3.config.php: |-
+      <?php
+      $CONFIG = array (
+        'objectstore' => array(
+          'class' => '\\OC\\Files\\ObjectStore\\S3',
+          'arguments' => array(
+            'bucket' => 'nextcloud',
+            'autocreate' => true,
+            'key'    => 'rfibb9ivKUwQA7AxwPVD',
+            'secret' => 'p98m97807cch4KhuhjefjJjQhy4w8wV26OWs2v8E',
+            'hostname' => 'minio.minio.svc.cluster.local',
+            'port' => 9000,
+            'use_ssl' => false,
+            'region' => 'us-east-1',
+            'use_path_style'=> true
+          ),
+        ),
+      );
     proxy.config.php: |-
       <?php
       $CONFIG = array (
         'trusted_proxies' => array('192.168.20.110'),
         'overwriteprotocol' => 'https',
       );
-    oidc.config.php: |-
-      <?php
-      $CONFIG = array (
-        'oidc_login_client_id' => 'nextcloud',
-        'oidc_login_client_secret' => 'E4KdTMA0caH3UtAeILi5RMVm9gRz0hom',
-        'oidc_login_provider_url' => 'https://sso-kc.tracexit.com/realms/NC',
-        'oidc_login_auto_redirect' => false,
-        'oidc_login_button_text' => 'Log in with Keycloak',
-        'oidc_login_display_name_claim' => 'preferred_username',
-        'oidc_login_use_id_token' => true,
-      );
-
-# 4. Ingress - Top Level
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: traefik
-  hosts:
-    - host: nc.tracexit.com
-      paths:
-        - path: /
-          pathType: Prefix
