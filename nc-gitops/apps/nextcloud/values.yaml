@@ -1,58 +1,61 @@
-# 1. Disable the default internal SQLite
+# 1. Database - Use a clean name
 internalDatabase:
   enabled: false
-
-# 2. Enable and configure the PostgreSQL sub-chart
 postgresql:
   enabled: true
   auth:
     database: nctracex
     username: ncusr
-    password: "DSF29jha64"
+    password: 'DSF29jha64'
   primary:
     persistence:
       enabled: true
       storageClass: "local-path"
       size: 10Gi
 
-# 2. Nextcloud Application Settings (MERGED)
+# 2. Storage - Point to your MinIO
 nextcloud:
   host: nc.tracexit.com
-  datadir: /var/www/html/data
-  configs:
-    proxy.config.php: |-
-      <?php
-      $CONFIG = array (
-        'trusted_proxies' => array('192.168.20.110'), 
-        'overwriteprotocol' => 'https',
-      );
-# This automatically installs the OIDC app on startup
+  # This makes MinIO your PRIMARY storage (no local HDD used for files)
+  objectStore:
+    enabled: true
+    config:
+      region: 'us-east-1'
+      bucket: 'nextcloud'
+      endpoint: 'minio.tracexit.com' # Change to your MinIO URL
+      port: 443
+      use_ssl: true
+      autocreate: true
+      key: 'rfibb9ivKUwQA7AxwPVD'
+      secret: 'p98m97807cch4KhuhjefjJjQhy4w8wV26OWs2v8E'
+
+  # 3. Keycloak Integration
   extraApps:
     oidc_login: https://github.com/pulsejet/nextcloud-oidc-login/releases/latest/download/oidc_login.tar.gz
 
   configs:
-    # Add this to your existing configs block
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array('192.168.20.110'),
+        'overwriteprotocol' => 'https',
+      );
     oidc.config.php: |-
       <?php
       $CONFIG = array (
-        'oidc_login_client_id' => 'nc',
+        'oidc_login_client_id' => 'nextcloud',
         'oidc_login_client_secret' => 'E4KdTMA0caH3UtAeILi5RMVm9gRz0hom',
-        'oidc_login_provider_url' => 'https://sso-kc.tracexit.com/realms/nc', # Change 'master' to your realm name
-        'oidc_login_logout_url' => 'https://sso-kc.tracexit.com/realms/nc/protocol/openid-connect/logout',
-        'oidc_login_auto_redirect' => true,
-        'oidc_login_end_session_enabled' => true,
-        'oidc_login_button_text' => 'Login with Keycloak',
+        'oidc_login_provider_url' => 'https://sso-kc.tracexit.com/realms/NC',
+        'oidc_login_auto_redirect' => false, # Keep false until we verify login works
+        'oidc_login_button_text' => 'Log in with Keycloak',
         'oidc_login_display_name_claim' => 'preferred_username',
+        'oidc_login_use_id_token' => true,
       );
 
 ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: traefik
-    # Traefik-specific: allow long-running connections for Nextcloud sync
-    traefik.ingress.kubernetes.io/router.entrypoints: web 
   hosts:
     - host: nc.tracexit.com
-      paths:
-        - path: /
-          pathType: Prefix
+      pathType: Prefix
