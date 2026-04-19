@@ -26,6 +26,7 @@ ingress:
 
 # 3. Nextcloud App Settings - Top Level
 nextcloud:
+  host: nc.tracexit.com
   objectStore:
     enabled: false 
 
