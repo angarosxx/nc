@@ -1,4 +1,4 @@
-# 1. Disable the internal Postgres bundled with the chart
+# 1. Disable the internal Postgres
 postgresql:
   enabled: false
 
@@ -7,33 +7,45 @@ nextcloud:
   externalDatabase:
     enabled: true
     type: postgresql
-    host: 192.168.20.120  # Your VM IP
+    host: 192.168.20.120
     database: nctracex
     user: ncusr
     password: 'DSF29jha64'
     port: 5432
 
-  # Your Admin credentials for the dashboard
   extraEnv:
     - name: NEXTCLOUD_ADMIN_USER
       value: "admin"
     - name: NEXTCLOUD_ADMIN_PASSWORD
       value: "DSF11jha64"
 
-  # 3. Ingress (Ensure this matches your previous working setup)
+  configs:
+    proxy.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_domains' => array(
+          'nc.tracexit.com',
+          'nextcloud.kube.home'
+        ),
+        'trusted_proxies' => array('192.168.20.110'),
+        'overwriteprotocol' => 'https',
+        'overwrite.cli.url' => 'https://nc.tracexit.com',
+      );
+
+# 3. Ingress (Fixed Indentation here)
 ingress:
-    enabled: true
-    className: traefik
-    annotations:
-      kubernetes.io/ingress.class: traefik
-      traefik.ingress.kubernetes.io/router.entrypoints: web
-    hosts:
-      - host: nc.tracexit.com
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nextcloud
-                port:
-                  number: 8080
+  enabled: true
+  className: traefik
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  hosts:
+    - host: nc.tracexit.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nextcloud
+              port:
+                number: 8080
