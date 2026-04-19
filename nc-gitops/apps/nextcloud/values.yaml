@@ -22,8 +22,8 @@ nextcloud:
     config:
       region: 'us-east-1'
       bucket: 'nextcloud'
-      endpoint: 'minio.tracexit.com' # Change to your MinIO URL
-      port: 443
+      endpoint: 'minio.minio.svc.cluster.local' # Change to your MinIO URL
+      port: 9000
       use_ssl: true
       autocreate: true
       key: 'rfibb9ivKUwQA7AxwPVD'
