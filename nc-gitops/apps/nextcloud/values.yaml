@@ -1,4 +1,4 @@
-# 1. PostgreSQL remains the same
+# 1. PostgreSQL - Top Level
 postgresql:
   enabled: true
   auth:
@@ -6,24 +6,26 @@ postgresql:
     username: ncusr
     password: 'DSF29jha64'
 
+# 2. Ingress - MUST BE TOP LEVEL (FLUSH LEFT)
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  hosts:
+    - host: nc.tracexit.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nextcloud
+              port:
+                number: 8080
+
+# 3. Nextcloud App Settings - Top Level
 nextcloud:
-  ingress:
-    enabled: true
-    className: traefik
-    annotations:
-      kubernetes.io/ingress.class: traefik
-      traefik.ingress.kubernetes.io/router.entrypoints: web
-      #traefik.ingress.kubernetes.io/router.tls: "true"
-    hosts:
-      - host: nc.tracexit.com
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nextcloud
-                port:
-                  number: 8080
   objectStore:
     enabled: false 
 
@@ -51,8 +53,6 @@ nextcloud:
       value: "true"
 
   configs:
-    # This is the "Magic" file. Nextcloud loads all files in /config/
-    # We name it with '00-' to ensure it loads FIRST.
     00-primary-s3.config.php: |-
       <?php
       $CONFIG = array (
@@ -80,7 +80,7 @@ nextcloud:
         'overwrite.cli.url' => 'https://nc.tracexit.com',
       );
 
-# 3. Temporarily DISABLE Probes to let the install finish
+# 4. Probes - Top Level
 livenessProbe:
   enabled: false
 readinessProbe:
