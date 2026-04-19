@@ -4,6 +4,15 @@ postgresql:
     database: nctracex
     username: ncusr
     password: 'DSF29jha64'
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 300  # Give it 5 minutes to figure itself out
+  periodSeconds: 10
+  failureThreshold: 10
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 300
+  periodSeconds: 10
 
 nextcloud:
   host: nc.tracexit.com
@@ -17,8 +26,8 @@ nextcloud:
       port: 9000
       use_ssl: false
       autocreate: true
-      key: 'rfibb9ivKUwQA7AxwPVD'
-      secret: 'p98m97807cch4KhuhjefjJjQhy4w8wV26OWs2v8E'
+      key: 'BwwEY8pVJO2w11xwPRL5'
+      secret: 'UqJrfP5Rv5w0qa7ZZpGIK4QuIGsUsZQGxlEvNuml'
       # Force Path Style for MinIO
       extraArgs: 
         use_path_style: true
