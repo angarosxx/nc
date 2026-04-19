@@ -7,8 +7,21 @@ postgresql:
     password: 'DSF29jha64'
 
 nextcloud:
-  host: nc.tracexit.com
-  # DISABLE the built-in objectStore to prevent the 'unique path' error
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  hosts:
+    - host: nc.tracexit.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nextcloud
+              port:
+                number: 80
   objectStore:
     enabled: false 
 
